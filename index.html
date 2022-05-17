@@ -51,6 +51,7 @@ body { margin: 0; padding: 0; overflow: scroll; }
 
  background-color: #111;
 }
+.mapbox-logo{ display: none; } .mapboxgl-ctrl-logo { display: none !important; } .mapbox-improve-map { display: none; } .mapboxgl-ctrl-compass { display: none; }
 #fly1 {
 display: block;
 position: fixed;
@@ -62,11 +63,11 @@ height: 40px;
 padding: 10px;
 border: 1px;
 border-radius: 3px;
-outline: solid #fff 1px;
+outline: solid #000 1px;
 font-size: 12px;
 text-align: center;
-color: #fff;
-background-color: rgba(255, 0,0, .05);
+color: #000;
+background-color: rgba(255, 0,0, .15);
 }
 #fly2 {
 display: block;
@@ -79,11 +80,11 @@ height: 40px;
 padding: 10px;
 border: 1px;
 border-radius: 3px;
-outline: solid #fff 1px;
+outline: solid #000 1px;
 font-size: 12px;
 text-align: center;
-color: yellow;
-background-color: rgba(255, 0,0, .05);
+color: black;
+background-color: rgba(255, 0,0, .15);
 }
 
 	
@@ -120,7 +121,7 @@ window.open(thelocation)
 return
 }
 win2=window.open("","","scrollbars")
-win2.moveTo(0,0)
+win2.moveTo(500,0)
 win2.resizeTo(100,100)
 go2()
 }
@@ -130,7 +131,7 @@ x=0
 win2.resizeBy(5,x)
 winheight+=5
 winsize+=5
-if (winsize>=screen.width-1000){
+if (winsize>=screen.width-1800 /*&& winheight>=screen.height-1200*/){
 win2.location=temploc
 winheight=100
 winsize=100
@@ -154,22 +155,25 @@ setTimeout("go2()",3.35)
 <button id="fly2">Fly 2</button>
 
 <script src="traffic-layers.js"></script>
-<script src="scrpt.js"></script>
+<!--<script src="scrpt.js"></script>
 <div>
-	<a href="javascript:openwindow('http://wsabstract.com')"><div class="postext">Open window</div></a>
+	<a href="javascript:openwindow('https://kikistef.github.io/mapbox1/')"><div class="postext">Open window</div></a>
 	<br>
-	<a href="javascript:openwindow('http://cnn.com')"><div class="postext">Open window</div></a>
-</div>
+	<a href="javascript:openwindow('https://kikistef.github.io/mapbox1/')"><div class="postext">Open window</div></a>
+</div>-->
 <script>
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2lraXN0ZWYiLCJhIjoiY2t1aTJ3eHltMDV3ODJ3cGUxemUzZWl3OSJ9.8-ngOMPn_Uk_LMavuCIpbQ';
 
 var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/kikistef/cl32rlf6c002314qqinxrgo3x', //stylesheet location
-    center: [2.27106,48.86927], // starting position
-    zoom: 11 // starting zoom
+    center: [2.27045,48.86864], // starting position
+    zoom: 11, // starting zoom
+	pitch: 45,
+	attributionControl: false,
 });
 map.transform._fov = 0.2;
+	
 // ↓↓ ajoute les bouton zoom + et - et la boussole ↓↓ //
 const nav = new mapboxgl.NavigationControl({
 showCompass: true
@@ -185,21 +189,22 @@ map.addControl(
 
 
 
+
 // ↓↓ ajoute le bouton pleine page ↓↓ //
 map.addControl(new mapboxgl.FullscreenControl());
 // ↓↓ ajoute le bouton d'affichage du traffic ↓↓ //
 map.addControl(new MapboxTraffic()); 
 
 
-
+var pointA = [2.27045,48.86864];
+var pointB = [2.28875,48.87948];
 
 // ↓↓ START section fly over avec 2 points fixes ↓↓ //
 document.getElementById('fly1').addEventListener('click', () => {
 // Fly to a random location by offsetting the point longitude, latitude
 // by up to 5 degrees.
 map.flyTo({
-center: [
-2.27106,48.86927],
+center: pointA,
 speed: 0.5, // make the flying slow
 curve: 1, // change the speed at which it zooms out
  
@@ -214,12 +219,101 @@ document.getElementById('fly2').addEventListener('click', () => {
 // Fly to a random location by offsetting the point longitude, latitude
 // by up to 5 degrees.
 map.flyTo({
-center: [
-2.28782,48.87867],
+center: pointB,
 essential: true // this animation is considered essential with respect to prefers-reduced-motion
 });
 });
 // ↑↑ END section fly over avec 2 points fixes ↑↑ //
+	
+//window.onkeydown = (ev: KeyboardEvent) => {
+	
+	   function easing(t) {
+        return t * (2 - t);
+    }
+	
+	var deltaDegrees = 5;
+	var deltaDegreesB = 5;
+document.body.onkeydown = function(ev){	
+	switch (ev.which) {
+	
+//touche "<- " pour passer au point de vue precedent
+	case 37:
+			console.log(" fleche <- ");
+	break;
+
+//touche " -> " pour passer au point de vue suivant				
+	case 39:
+		console.log(" fleche -> ");
+	break;
+
+//touche "Fleche Haut" pour lancer suivi et rotation		
+	case 38:
+		//map.zoomLevel += 0.03;
+	break;
+
+//touche "Fleche Bas" pour arreter le suivi et la rotation		
+	case 40:
+		//map.zoomLevel += 0.03;
+	break;
+	
+			
+//touche ----------[ - ]----------  pour ralentir l'ego car	
+	case 109:
+		console.log(" signe - ");
+	break;
+			
+//touche ----------[ + ]----------  pour ralentir l'ego car	
+	case 107:
+		console.log(" signe + ");
+	break;
+			
+	
+	//touche ----------[ T ]----------  pour le tilt		
+	case 84:
+		
+		console.log("pitch + : " + map.getPitch() + deltaDegrees);
+			map.easeTo({
+			pitch: map.getPitch() + deltaDegrees,
+			easing: easing
+			});
+	break;
+
+//touche ----------[ G ]----------  pour le tilt		
+	case 71:
+		console.log("pitch - : " + (map.getPitch() - deltaDegrees));
+			map.easeTo({
+			pitch: map.getPitch() - deltaDegrees,
+			easing: easing
+			});
+	break;
+			
+//touche ----------[ R ]----------  pour la rotation		
+	case 82:
+		
+		console.log("bearing + : " + map.getBearing() + deltaDegreesB);
+			map.easeTo({
+			bearing: map.getBearing() + deltaDegreesB,
+			easing: easing
+			});
+	break;
+
+//touche ----------[ F ]----------  pour la rotation		
+	case 70:
+		console.log("bearing - : " + (map.getBearing() - deltaDegreesB));
+			map.easeTo({
+			bearing: map.getBearing() - deltaDegreesB,
+			easing: easing
+			});
+	break;
+/////////////////////END TOUCHE CLAVIER/////////////////////
+	}
+
+};
+
+	
+	
+	
+	
 </script>
 
  
