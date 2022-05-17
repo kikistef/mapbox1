@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Mapbox GL Traffic</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="C:/Users/kikis/Documents/GitHub/mapBox-files/mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
+    
+    <script src='mapbox-gl-traffic.js'></script>
+    <link href='mapbox-gl-traffic.css' rel='stylesheet' />
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+
+</head>
+<body>
+<style>
+#fly1 {
+display: block;
+position: fixed;
+bottom : 20px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: #fff;
+background-color: rgba(255, 0,0, .05);
+}
+#fly2 {
+display: block;
+position: fixed;
+bottom : 40px;
+right: 0px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: yellow;
+background-color: rgba(255, 0,0, .05);
+}
+</style>
+<div id='map'></div>
+<br>
+<button id="fly1">Fly 1</button>
+<br>
+<button id="fly2">Fly 2</button>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoia2lraXN0ZWYiLCJhIjoiY2t1bjB0bmFiMXZyczJ2b3pidHFhMmxtbSJ9.1kMFW25HszJmjJNHAQXA2w';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/traffic-night-v2',
+    center: [2.21,48.75],
+    zoom: 9,
+    hash: true
+});
+map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new MapboxTraffic());
+</script>
+
+</body>
+</html>
