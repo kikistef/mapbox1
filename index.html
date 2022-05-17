@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Map de stef 001</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+	<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css" rel="stylesheet">
+
+ 	<script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
+	<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
+ 
+
+	<script src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>
+	<link rel="stylesheet" href="mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
+    
+	<script src="mapbox-gl-traffic.js"></script>
+    <link href="mapbox-gl-traffic.css" rel="stylesheet" />
+
+<style>
+body { margin: 0; padding: 0; overflow: scroll; }
+	
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+
+</style>
+	<style>
+.postext {
+
+	position: relative;
+		padding: 10px;
+	left:90%;
+	display: block;
+	color: #fff;
+	top:10%;
+	width: 120px;
+	font-size: 14px;
+	text-align: center;
+	background-color: rgba(150,150,150,0.55);
+	border: 1px;
+	border-radius: 3px;
+	outline: solid #fff 1px;
+
+}		
+.moveMap {
+
+	height: 442px;
+ position: relative;
+
+
+ background-color: #111;
+}
+#fly1 {
+display: block;
+position: fixed;
+bottom : 20px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: #fff;
+background-color: rgba(255, 0,0, .05);
+}
+#fly2 {
+display: block;
+position: fixed;
+bottom : 70px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: yellow;
+background-color: rgba(255, 0,0, .05);
+}
+
+	
+	
+	
+</style>
+<style type="text/css">
+    body {
+        overflow: hidden;
+
+    }
+</style>
+</head>
+<body>
+<script>
+<!--
+
+
+var winheight=100
+var winsize=100
+var x=500
+
+/*
+Animated Window Opener Script (updated 00/04/24)- 
+(c) Dynamic Drive (www.dynamicdrive.com)
+For full source code, installation instructions, 100's more DHTML scripts, and Terms Of
+Use, visit dynamicdrive.com
+ ↓↓                                                               ↓↓   */
+
+function openwindow(thelocation){
+temploc=thelocation
+if (!(window.resizeTo&&document.all)&&!(window.resizeTo&&document.getElementById)){
+window.open(thelocation)
+return
+}
+win2=window.open("","","scrollbars")
+win2.moveTo(0,0)
+win2.resizeTo(100,100)
+go2()
+}
+function go2(){
+if (winheight>=screen.availHeight-3)
+x=0
+win2.resizeBy(5,x)
+winheight+=5
+winsize+=5
+if (winsize>=screen.width-1000){
+win2.location=temploc
+winheight=100
+winsize=100
+x=5
+return
+}
+setTimeout("go2()",3.35)
+}
+//-->
+</script>
+
+
+
+
+
+<div id="map" class="moveMap"></div>
+
+<br>
+<button id="fly1">Fly 1</button>
+<br>
+<button id="fly2">Fly 2</button>
+
+<script src="traffic-layers.js"></script>
+<script src="scrpt.js"></script>
+<div>
+	<a href="javascript:openwindow('http://wsabstract.com')"><div class="postext">Open window</div></a>
+	<br>
+	<a href="javascript:openwindow('http://cnn.com')"><div class="postext">Open window</div></a>
+</div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoia2lraXN0ZWYiLCJhIjoiY2t1aTJ3eHltMDV3ODJ3cGUxemUzZWl3OSJ9.8-ngOMPn_Uk_LMavuCIpbQ';
+
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/kikistef/cl32rlf6c002314qqinxrgo3x', //stylesheet location
+    center: [2.27106,48.86927], // starting position
+    zoom: 11 // starting zoom
+});
+
+// ↓↓ ajoute les bouton zoom + et - et la boussole ↓↓ //
+const nav = new mapboxgl.NavigationControl({
+showCompass: true
+});
+map.addControl(nav, 'top-right');
+// ↓↓ ajoute les fonctionnalités de recherche d'itineraire et point A-B ↓↓ //
+map.addControl(
+        new MapboxDirections({
+            accessToken: mapboxgl.accessToken
+        }),
+        'top-left'
+);
+
+
+
+// ↓↓ ajoute le bouton pleine page ↓↓ //
+map.addControl(new mapboxgl.FullscreenControl());
+// ↓↓ ajoute le bouton d'affichage du traffic ↓↓ //
+map.addControl(new MapboxTraffic()); 
+
+
+
+
+// ↓↓ START section fly over avec 2 points fixes ↓↓ //
+document.getElementById('fly1').addEventListener('click', () => {
+// Fly to a random location by offsetting the point longitude, latitude
+// by up to 5 degrees.
+map.flyTo({
+center: [
+2.27106,48.86927],
+speed: 0.5, // make the flying slow
+curve: 1, // change the speed at which it zooms out
+ 
+// This can be any easing function: it takes a number between
+// 0 and 1 and returns another number between 0 and 1.
+easing: (t) => t,
+essential: true // this animation is considered essential with respect to prefers-reduced-motion
+});
+});
+
+document.getElementById('fly2').addEventListener('click', () => {
+// Fly to a random location by offsetting the point longitude, latitude
+// by up to 5 degrees.
+map.flyTo({
+center: [
+2.28782,48.87867],
+essential: true // this animation is considered essential with respect to prefers-reduced-motion
+});
+});
+// ↑↑ END section fly over avec 2 points fixes ↑↑ //
+</script>
+
+ 
+</body>
+</html>

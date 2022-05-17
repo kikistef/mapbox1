@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Map de stef 001</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+	<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css" rel="stylesheet">
+
+ 	<script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
+	<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
+ 
+	<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+	<link rel="stylesheet" href="mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
+    
+	<script src="mapbox-gl-traffic.js"></script>
+    <link href="mapbox-gl-traffic.css" rel="stylesheet" />
+
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+
+<style>
+#fly1 {
+display: block;
+position: fixed;
+bottom : 20px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: #fff;
+background-color: rgba(255, 0,0, .05);
+}
+#fly2 {
+display: block;
+position: fixed;
+bottom : 70px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: yellow;
+background-color: rgba(255, 0,0, .05);
+}
+#trafficButton { 
+            position: absolute; 
+            top: 200px;
+            right: 100px;
+			background-color: rgba(68, 68,68, .5);
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 7px;
+            font-family: sans-serif;
+            padding: 0.8em;
+            cursor: pointer;
+            transition: 0.3s all;
+        }
+        #trafficButton:hover {
+            background-color: #fdb314;
+			color: #000;
+	}
+	
+	
+	
+</style>
+<style type="text/css">
+    body {
+        overflow: hidden;
+    }
+</style>
+
+
+<div id="map"></div>
+<br>
+<button id="fly1">Fly 1</button>
+<br>
+<button id="fly2">Fly 2</button>
+<button id="trafficButton">trafficButton</button>
+<script src="traffic-layers.js"></script>
+<script src="scrpt.js"></script>
+
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoia2lraXN0ZWYiLCJhIjoiY2t1aTJ3eHltMDV3ODJ3cGUxemUzZWl3OSJ9.8-ngOMPn_Uk_LMavuCIpbQ';
+
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/kikistef/ckuk17a5912vn17nswx4swwd2', //stylesheet location
+    center: [2.21,48.75], // starting position
+    zoom: 11 // starting zoom
+});
+
+// ↓↓ ajoute les bouton zoom + et - et la boussole ↓↓ //
+const nav = new mapboxgl.NavigationControl({
+showCompass: true
+});
+map.addControl(nav, 'top-right');
+// ↓↓ ajoute les fonctionnalités de recherche d'itineraire et point A-B ↓↓ //
+map.addControl(
+        new MapboxDirections({
+            accessToken: mapboxgl.accessToken
+        }),
+        'top-left'
+);
+
+
+
+// ↓↓ ajoute le bouton pleine page ↓↓ //
+map.addControl(new mapboxgl.FullscreenControl());
+// ↓↓ ajoute le bouton d'affichage du traffic ↓↓ //
+map.addControl(new MapboxTraffic()); 
+
+
+
+
+// ↓↓ START section fly over avec 2 points fixes ↓↓ //
+document.getElementById('fly1').addEventListener('click', () => {
+// Fly to a random location by offsetting the point longitude, latitude
+// by up to 5 degrees.
+map.flyTo({
+center: [
+2.19068,48.75786],
+speed: 0.5, // make the flying slow
+curve: 1, // change the speed at which it zooms out
+ 
+// This can be any easing function: it takes a number between
+// 0 and 1 and returns another number between 0 and 1.
+easing: (t) => t,
+essential: true // this animation is considered essential with respect to prefers-reduced-motion
+});
+});
+
+document.getElementById('fly2').addEventListener('click', () => {
+// Fly to a random location by offsetting the point longitude, latitude
+// by up to 5 degrees.
+map.flyTo({
+center: [
+2.3,48.5],
+essential: true // this animation is considered essential with respect to prefers-reduced-motion
+});
+});
+// ↑↑ END section fly over avec 2 points fixes ↑↑ //
+</script>
+ 
+</body>
+</html>

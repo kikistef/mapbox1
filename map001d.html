@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Map de stef 001</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+	<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css" rel="stylesheet">
+
+ 	<script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
+	<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
+ 
+
+	<script src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>
+	<link rel="stylesheet" href="mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
+    
+	<script src="mapbox-gl-traffic.js"></script>
+    <link href="mapbox-gl-traffic.css" rel="stylesheet" />
+
+<style>
+body { margin: 0; padding: 0; overflow: scroll; }
+	
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+.distance-container {
+	position: absolute;
+	top: 100px;
+	left: 500px;
+	width: 300px;
+	height: 200px;
+	background-color: rgba(185,59,185,0.31);
+	z-index: 100;
+ }
+.positionY0 {
+	color: #fff;
+	background: rgba(78,59,61,0.8);;
+	left: -100%;
+	top: 450px;
+	border-radius: 8px;
+}
+.positionRoutes {
+	position:absolute;
+	margin-left: -170%;
+	margin-top: 450px;
+	margin-bottom: 0;
+}
+.cacheCoul {
+	position:absolute;
+	width:100%;
+	height: 50px;
+	top:30%;
+	background-color: #f0f;
+	z-index: 300;
+	text-align: center;
+	font-size: 50px;
+	color:white;
+	}
+
+
+</style>
+	<style>
+	
+.moveMap {
+
+	height: 442px;
+ position: relative;
+
+
+ background-color: rgba(0,0,0,0.52);
+}
+#fly1 {
+display: block;
+position: fixed;
+bottom : 20px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: #fff;
+background-color: rgba(255, 0,0, .05);
+}
+#fly2 {
+display: block;
+position: fixed;
+bottom : 70px;
+right: 20px;
+margin: 0px auto;
+width: 7%;
+height: 40px;
+padding: 10px;
+border: 1px;
+border-radius: 3px;
+outline: solid #fff 1px;
+font-size: 12px;
+text-align: center;
+color: yellow;
+background-color: rgba(255, 0,0, .05);
+}
+
+	
+	
+	
+</style>
+<style type="text/css">
+    body {
+        overflow: hidden;
+
+    }
+</style>
+</head>
+<body>
+<script src="https://unpkg.com/three@0.126.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.126.0/examples/js/loaders/GLTFLoader.js"></script>
+
+
+
+
+
+<div id="map" class="moveMap"></div>
+<!--<div class="distance-container">distance-container</div>-->
+<br>
+	<script src="traffic-layers.js"></script>
+<button id="fly1">Fly 1</button>
+<br>
+<button id="fly2">Fly 2</button>
+<script type="text/javascript" src="mapboxgl-control-minimap.js"></script>
+<!--
+<script src="scrpt.js"></script>
+ <div class="cacheCoul">truc</div> -->
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoia2lraXN0ZWYiLCJhIjoiY2t1aTJ3eHltMDV3ODJ3cGUxemUzZWl3OSJ9.8-ngOMPn_Uk_LMavuCIpbQ';
+
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/kikistef/cl32rlf6c002314qqinxrgo3x', //stylesheet location
+    center: [2.21280,48.75000], // starting position
+    zoom: 18, // starting zoom
+	antialias: true, // create the gl context with MSAA antialiasing, so custom layers are antialiased
+	 attributionControl: false
+});
+	
+
+
+	
+
+// ↓↓ ajoute les bouton zoom + et - et la boussole ↓↓ //
+const nav = new mapboxgl.NavigationControl({
+showCompass: true
+});
+map.addControl(nav, 'top-right');
+
+// ↓↓ ajoute le bouton pleine page ↓↓ //
+map.addControl(new mapboxgl.FullscreenControl());
+// ↓↓ ajoute le bouton d'affichage du traffic ↓↓ //
+map.addControl(new MapboxTraffic()); 
+
+	// ↓↓ ajoute les fonctionnalités de recherche d'itineraire et point A-B ↓↓ //
+map.addControl(
+        new MapboxDirections({
+            accessToken: mapboxgl.accessToken
+        })//, 'top-left'
+);
+
+
+
+	
+	
+	
+
+/*	
+class MyCustomControl {
+  onAdd(map){
+    this.map = map;
+    this.container = document.createElement('div');
+    this.container.className = 'my-custom-control';
+    this.container.textContent = 'My custom control';
+    return this.container;
+  }
+  onRemove(){
+    this.container.parentNode.removeChild(this.container);
+    this.map = undefined;
+  }
+}
+
+const myCustomControl = new MyCustomControl();
+
+map.addControl(myCustomControl);*/	
+	
+	
+	// ↓↓ xxxxx ↓↓ //
+map.on("load", function () {
+	map.addControl(new mapboxgl.Minimap({
+	center: [2.21280,48.75000],
+	zoom: 14,
+	zoomLevels: [],
+	width: "800px",
+	height: "700px"
+	}));
+});
+
+
+// ↓↓ START section fly over avec 2 points fixes ↓↓ //
+document.getElementById('fly1').addEventListener('click', () => {
+// Fly to a random location by offsetting the point longitude, latitude
+// by up to 5 degrees.
+map.flyTo({
+center: [
+2.19068,48.75786],
+speed: 0.5, // make the flying slow
+curve: 1, // change the speed at which it zooms out
+ 
+// This can be any easing function: it takes a number between
+// 0 and 1 and returns another number between 0 and 1.
+easing: (t) => t,
+essential: true // this animation is considered essential with respect to prefers-reduced-motion
+});
+});
+
+document.getElementById('fly2').addEventListener('click', () => {
+// Fly to a random location by offsetting the point longitude, latitude
+// by up to 5 degrees.
+map.flyTo({
+center: [
+2.3,48.5],
+essential: true // this animation is considered essential with respect to prefers-reduced-motion
+});
+});
+// ↑↑ END section fly over avec 2 points fixes ↑↑ //
+</script>
+
+ 
+</body>
+</html>
+
+
+
+
