@@ -397,7 +397,7 @@ border-radius: 10px 10px 0px 0px;
 
     }
     .mapbox-directions-instructions-wrapper {
-      max-height: 25vh;
+      max-height: 25vh; /* hauteur max du conteneur de detail des etapes*/
       }
   .mapbox-directions-routes {
     margin-left: 5px;
