@@ -7595,6 +7595,7 @@ var Inputs = function () {
       var originEl = this.originInput.onAdd(this._map);
       var originContainerEl = this.container.querySelector('#mapbox-directions-origin-input');
       originContainerEl.appendChild(originEl);
+		
 
       this.destinationInput = new _geocoder2.default(Object.assign({}, {
         accessToken: accessToken
@@ -7607,6 +7608,7 @@ var Inputs = function () {
         var coords = e.result.center;
         createOrigin(coords);
         _this.animateToCoordinates('origin', coords);
+		  
       });
 
       this.originInput.on('clear', clearOrigin);
