@@ -4,36 +4,44 @@
 <meta charset="utf-8">
 <title>Map de stef 001</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-
-	<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css" rel="stylesheet">
-
- 	<script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
-	<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
- 
-
-	<script src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>
-	<link rel="stylesheet" href="mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
-    
-	<script src="mapbox-gl-traffic.js"></script>
-    <link href="mapbox-gl-traffic.css" rel="stylesheet" />
-
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js"></script>
+<link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
+<script type="text/javascript" src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>
+<link rel="stylesheet" href="mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
+<script src="mapbox-gl-traffic.js"></script>
+<link href="mapbox-gl-traffic.css" rel="stylesheet" />
 <style>
-body { margin: 0; padding: 0; overflow: scroll; }
-	
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+body {
+	margin: 0;
+	padding: 0;
+	overflow: scroll;
+}
 
-
-</style>
-	<style>
+.distance-container {
+	position: absolute;
+	top: 450px;
+	left: 100px;
+	width: 500px;
+	height: 60px;
+	background-color: rgba(185,59,185,0.51);
+	z-index: 12;
+	border-radius: 8px;
+	border: 2px #ff6600 solid;
+}
+.distance-container:active {
+	background-color: rgba(50,50,50,0.51);
+	;
+	transform: translateY(1px);
+}
 .postext {
-
 	position: relative;
-		padding: 10px;
-	left:90%;
+	padding: 10px;
+	left: 90%;
 	display: block;
 	color: #fff;
-	top:10%;
+	top: 10%;
 	width: 120px;
 	font-size: 14px;
 	text-align: center;
@@ -41,74 +49,98 @@ body { margin: 0; padding: 0; overflow: scroll; }
 	border: 1px;
 	border-radius: 3px;
 	outline: solid #fff 1px;
-
-}		
-.moveMap {
-
-	height: 442px;
- position: relative;
-
-
- background-color: #111;
 }
-.mapbox-logo{ display: none; } .mapboxgl-ctrl-logo { display: none !important; } .mapbox-improve-map { display: none; } .mapboxgl-ctrl-compass { display: none; }
+.moveMap {
+	height: 442px;
+	position: relative;
+	background-color: #111;
+}
+/* ↓↓ pour enlever les logos mapbox ↓↓ */
+.mapbox-logo {
+	display: none;
+}
+.mapboxgl-ctrl-logo {
+	display: none !important;
+}
+.mapbox-improve-map {
+	display: none;
+}
+.mapboxgl-ctrl-compass {
+	display: none;
+}
+/* ↑↑ pour enlever les logos mapbox ↑↑ */
 #fly1 {
-display: block;
-position: fixed;
-bottom : 20px;
-right: 20px;
-margin: 0px auto;
-width: 7%;
-height: 40px;
-padding: 10px;
-border: 1px;
-border-radius: 3px;
-outline: solid #000 1px;
-font-size: 12px;
-text-align: center;
-color: #000;
-background-color: rgba(255, 0,0, .15);
+	display: block;
+	position: fixed;
+	bottom : 20px;
+	right: 20px;
+	margin: 0px auto;
+	width: 7%;
+	height: 40px;
+	padding: 10px;
+	border: 1px;
+	border-radius: 3px;
+	outline: solid #000 1px;
+	font-size: 12px;
+	text-align: center;
+	color: #000;
+	background-color: rgba(255, 0,0, .15);
 }
 #fly2 {
-display: block;
-position: fixed;
-bottom : 70px;
-right: 20px;
-margin: 0px auto;
-width: 7%;
-height: 40px;
-padding: 10px;
-border: 1px;
-border-radius: 3px;
-outline: solid #000 1px;
-font-size: 12px;
-text-align: center;
-color: black;
-background-color: rgba(255, 0,0, .15);
+	display: block;
+	position: fixed;
+	bottom : 70px;
+	right: 20px;
+	margin: 0px auto;
+	width: 7%;
+	height: 40px;
+	padding: 10px;
+	border: 1px;
+	border-radius: 3px;
+	outline: solid #000 1px;
+	font-size: 12px;
+	text-align: center;
+	color: black;
+	background-color: rgba(255, 0,0, .15);
 }
-
-	
-	
-	
+#b {
+	display: table;
+	position: relative;
+	margin: 0px auto;
+	word-wrap: anywhere;
+	white-space: pre-wrap;
+	padding: 10px;
+	border: none;
+	border-radius: 3px;
+	font-size: 12px;
+	text-align: center;
+	color: #222;
+	background: #fff;
+}
+#map {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+}
 </style>
 <style type="text/css">
-    body {
-        overflow: hidden;
-
-    }
+body {
+	overflow: hidden;
+}
 </style>
 </head>
 <body>
 <script>
-<!--
+//import pointB from 'mapbox-gl-directions-master/src/mapbox-gl-directions.js';
 
 
 var winheight=100
 var winsize=100
 var x=500
 
-/*
-Animated Window Opener Script (updated 00/04/24)- 
+
+/*Animated Window Opener Script (updated 00/04/24)- 
 (c) Dynamic Drive (www.dynamicdrive.com)
 For full source code, installation instructions, 100's more DHTML scripts, and Terms Of
 Use, visit dynamicdrive.com
@@ -142,26 +174,29 @@ setTimeout("go2()",3.35)
 }
 //-->
 </script>
-
-
-
-
-
 <div id="map" class="moveMap"></div>
-
 <br>
 <button id="fly1">Fly 1</button>
 <br>
 <button id="fly2">Fly 2</button>
-
-<script src="traffic-layers.js"></script>
+<script src="traffic-layers.js"></script> 
+<br>
+<div>
+  <button  class="distance-container" id="bout">bouton </button>
+  
+  <!--<script src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>--> 
+  
+</div>
 <!--<script src="scrpt.js"></script>
 <div>
 	<a href="javascript:openwindow('https://kikistef.github.io/mapbox1/')"><div class="postext">Open window</div></a>
 	<br>
 	<a href="javascript:openwindow('https://kikistef.github.io/mapbox1/')"><div class="postext">Open window</div></a>
-</div>-->
+</div>--> 
 <script>
+	
+
+	
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2lraXN0ZWYiLCJhIjoiY2t1aTJ3eHltMDV3ODJ3cGUxemUzZWl3OSJ9.8-ngOMPn_Uk_LMavuCIpbQ';
 
 var map = new mapboxgl.Map({
@@ -182,12 +217,12 @@ map.addControl(nav, 'top-right');
 // ↓↓ ajoute les fonctionnalités de recherche d'itineraire et point A-B ↓↓ //
 map.addControl(
         new MapboxDirections({
-            accessToken: mapboxgl.accessToken
+            accessToken: mapboxgl.accessToken,
+			congestion: true,
+			//placeholderOrigin: 
         }),
         'top-left'
 );
-
-
 
 
 // ↓↓ ajoute le bouton pleine page ↓↓ //
@@ -195,35 +230,71 @@ map.addControl(new mapboxgl.FullscreenControl());
 // ↓↓ ajoute le bouton d'affichage du traffic ↓↓ //
 map.addControl(new MapboxTraffic()); 
 
-
+//var pointB = [2.28875,48.87948];
 var pointA = [2.27045,48.86864];
+var pointC = [2.28875,48.87948];
 var pointB = [2.28875,48.87948];
+	var p1 = 0;
+	var p2 = 0;
+document.getElementById('bout').addEventListener('click', () => {
+	//pointB = [document.getElementById('bout').innerHTML];
+	var pointB = document.getElementById('bout').value;
+	//var eee = new mapboxgl.LngLat(pointB);
+	console.log("valPointB : " + pointB);
+	//console.log("valPointB 2 : " + valPointB[1]);
+});	
 
+map.on('mousedown', (e) => {
+document.getElementById('bout').innerHTML =
+	// `e.point` is the x, y coordinates of the `mousemove` event
+	// relative to the top-left corner of the map.
+   // JSON.stringify(e.point) +
+   // '<br />' +
+	// `e.lngLat` is the longitude, latitude geographical position of the event.
+	JSON.stringify(e.lngLat.wrap());
+	 p1 = JSON.stringify(e.lngLat.lng);
+	 p2 = JSON.stringify(e.lngLat.lat);
+
+	//console.log("ppp : " + p1 + " -- " + p2);
+});
+	
+	
 // ↓↓ START section fly over avec 2 points fixes ↓↓ //
 document.getElementById('fly1').addEventListener('click', () => {
+	
 // Fly to a random location by offsetting the point longitude, latitude
 // by up to 5 degrees.
 map.flyTo({
 center: pointA,
 speed: 0.5, // make the flying slow
-curve: 1, // change the speed at which it zooms out
- 
+curve: 0.5, // change the speed at which it zooms out
 // This can be any easing function: it takes a number between
 // 0 and 1 and returns another number between 0 and 1.
-easing: (t) => t,
+//easing: (t) => t,
 essential: true // this animation is considered essential with respect to prefers-reduced-motion
 });
 });
 
 document.getElementById('fly2').addEventListener('click', () => {
+	//console.log("pointB2 : " + pointB);
+	//myFunc();
 // Fly to a random location by offsetting the point longitude, latitude
 // by up to 5 degrees.
 map.flyTo({
-center: pointB,
+center: [p1, p2],
+speed: 0.5,
+curve: 1,
+	//easing: (t) => t,
 essential: true // this animation is considered essential with respect to prefers-reduced-motion
 });
 });
 // ↑↑ END section fly over avec 2 points fixes ↑↑ //
+
+
+	
+	
+	
+	
 	
 //window.onkeydown = (ev: KeyboardEvent) => {
 	
@@ -315,7 +386,5 @@ document.body.onkeydown = function(ev){
 	
 	
 </script>
-
- 
 </body>
 </html>
