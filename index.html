@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html><head>
 <meta charset="utf-8">
 <title>Map de stef 001</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js"></script>
 <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
+<!--<link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">-->
+	<link href="downloadJSCSS/v2-5-0/mapbox-gl.css" rel="stylesheet">
+	
 <script type="text/javascript" src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>
 <link rel="stylesheet" href="mapbox-gl-directions-master/src/mapbox-gl-directions.css" type="text/css">
 <script src="mapbox-gl-traffic.js"></script>
@@ -19,22 +20,56 @@ body {
 	overflow: scroll;
 }
 
-.distance-container {
+.geoButtonA {
 	position: absolute;
 	top: 450px;
-	left: 100px;
-	width: 500px;
-	height: 60px;
-	background-color: rgba(185,59,185,0.51);
+	left: 30px;
+	width: 360px;
+	height: 40px;
+	/*background-color: rgba(59, 178, 208, .8);*/
+	background: linear-gradient(0.25turn, rgba(59, 178, 208, .8) 10%, #fff 20% 100%);
 	z-index: 12;
-	border-radius: 8px;
-	border: 2px #ff6600 solid;
+	border-radius: 3px;
+	border: 1px #000 solid;
 }
-.distance-container:active {
+.geoButtonA:active {
 	background-color: rgba(50,50,50,0.51);
 	;
 	transform: translateY(1px);
 }
+.geoButtonB {
+	position: absolute;
+	top: 500px;
+	left: 30px;
+	width: 360px;
+	height: 40px;
+	/*background-color: rgba(255, 102,0, .8);*/
+	background: linear-gradient(0.25turn, #ff6600 10%, #fff 20% 100%);
+	z-index: 12;
+	border-radius: 3px;
+	border: 1px #000 solid;
+}
+.geoList {
+	position: absolute;
+	display: block;
+	overflow-wrap: break-word;
+	top: 550px;
+	left: 30px;
+	width: 850px;
+	height: 300px;
+	padding: 4px;
+	overflow-y: scroll;
+	scrollbar-width: 1px;
+	scrollbar-color: red;
+	font-family: Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";
+	font-size: 11px;
+	/*background-color: rgba(59, 178, 208, .8);*/
+	background-color: #D9D9D9;
+	z-index: 12;
+	border-radius: 3px;
+	border: 1px #000 solid;
+}
+
 .postext {
 	position: relative;
 	padding: 10px;
@@ -68,40 +103,133 @@ body {
 .mapboxgl-ctrl-compass {
 	display: none;
 }
+.Hline {
+	width: 4%;
+	height: 0px;
+	top:221px;
+	left: 48%;
+	border-bottom: 1px solid black;
+	position: absolute;
+	pointer-events: none;
+	}
+.Vline {
+	width: 50%;
+	height: 40px;
+	top:201px;
+
+	border-right: 1px solid black;
+	position: absolute;
+	pointer-events: none;
+}
 /* ↑↑ pour enlever les logos mapbox ↑↑ */
 #fly1 {
 	display: block;
 	position: fixed;
-	bottom : 20px;
-	right: 20px;
+	top : 450px;
+	right: 130px;
 	margin: 0px auto;
-	width: 7%;
+	width: 100px;
 	height: 40px;
 	padding: 10px;
 	border: 1px;
 	border-radius: 3px;
 	outline: solid #000 1px;
 	font-size: 12px;
+		font-weight: 700;
 	text-align: center;
 	color: #000;
-	background-color: rgba(255, 0,0, .15);
+	background-color: rgba(59, 178, 208, .8);
 }
 #fly2 {
 	display: block;
 	position: fixed;
-	bottom : 70px;
+	top : 450px;
 	right: 20px;
 	margin: 0px auto;
-	width: 7%;
+	width: 100px;
 	height: 40px;
 	padding: 10px;
 	border: 1px;
 	border-radius: 3px;
 	outline: solid #000 1px;
 	font-size: 12px;
+	font-weight: 700;
 	text-align: center;
 	color: black;
-	background-color: rgba(255, 0,0, .15);
+	background-color: rgba(255, 102,0, .8);
+}
+#PathMaillot{
+	display: block;
+	z-index: 20000;
+	position: fixed;
+	top :552px;
+	right: 20px;
+	margin: 0px auto;
+	width: 100px;
+	height: 40px;
+	padding: 0px;
+	border: 1px;
+	border-radius: 3px;
+	outline: solid #000 1px;
+	font-size: 12px;
+	font-weight: 700;
+	text-align: center;
+	color: black;
+	background-color: rgba(72, 130,197, .8);
+	}
+#boundsAction {
+	display: block;
+	z-index: 400;
+	position: fixed;
+	top: 500px;
+	right: 130px;
+	width: 100px;
+	height: 42px;
+	font-size: 12px;
+	text-align: center;
+	font-weight: 700;
+	padding: 0px;
+	background-color: #ccead5;
+	/*background-color: rgba(255, 102,0, .8);
+	background: linear-gradient(0.25turn, #ff6600 10%, #fff 20% 100%);*/
+	z-index: 400;
+	border-radius: 3px;
+	border: 1px #000 solid;
+	}
+#boundsMaillot {
+	display: block;
+	z-index: 400;
+	position: fixed;
+	top: 552px;
+	right: 130px;
+	width: 100px;
+	height: 42px;
+	font-size: 12px;
+	text-align: center;
+	font-weight: 700;
+	padding: 0px;
+	background-color: #ccead5;
+	/*background-color: rgba(255, 102,0, .8);
+	background: linear-gradient(0.25turn, #ff6600 10%, #fff 20% 100%);*/
+	z-index: 400;
+	border-radius: 3px;
+	border: 1px #000 solid;
+	}
+#distancePath {
+	position: absolute;
+	top: 450px;
+	left: 400px;
+	width: 160px;
+	height: 40px;
+	font-size: 12px;
+	text-align: center;
+	padding: 10px;
+	background-color: #D9D9D9;
+	/*background-color: rgba(255, 102,0, .8);
+	background: linear-gradient(0.25turn, #ff6600 10%, #fff 20% 100%);*/
+	z-index: 12;
+	border-radius: 3px;
+	border: 1px #000 solid;
 }
 #b {
 	display: table;
@@ -174,19 +302,28 @@ setTimeout("go2()",3.35)
 }
 //-->
 </script>
+	
 <div id="map" class="moveMap"></div>
 <br>
-<button id="fly1">Fly 1</button>
-<br>
-<button id="fly2">Fly 2</button>
+<button id="fly1">Fly to A</button>
+<button id="fly2">Fly to B</button>
+	
 <script src="traffic-layers.js"></script> 
+<button id="PathMaillot">launch Path Maillot</button>
 <br>
 <div>
-  <button  class="distance-container" id="bout">bouton </button>
-  
+  <button  class="geoButtonA" id="boutA" value="essai 1">Geoposition A </button>
+  <button  class="geoButtonB" id="boutB" value="essai 2">Geoposition B </button>
+	<div  class="geoList" id="boutC" ></div>
+	<button id="distancePath" value="distance">distance</button>
+	<button id="boundsMaillot" value="distance">launch Bounds Maillot</button>
+	
+	<button id="boundsAction" value="distance">launch Bounds</button>
   <!--<script src="mapbox-gl-directions-master/src/mapbox-gl-directions.js"></script>--> 
   
 </div>
+<div class="Hline"></div>
+<div class="Vline"></div>
 <!--<script src="scrpt.js"></script>
 <div>
 	<a href="javascript:openwindow('https://kikistef.github.io/mapbox1/')"><div class="postext">Open window</div></a>
@@ -209,9 +346,33 @@ var map = new mapboxgl.Map({
 });
 map.transform._fov = 0.2;
 	
+	
+	    map.on('load', () => {
+        map.addSource('mapbox-dem', {
+            'type': 'raster-dem',
+            'url': 'mapbox://mapbox.mapbox-terrain-v2',
+            'tileSize': 512,
+            'maxzoom': 14
+        });
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 0.2 });
+        map.addLayer({
+            'id': 'sky',
+            'type': 'sky',
+            'paint': {
+                'sky-type': 'atmosphere',
+                'sky-atmosphere-sun': [0.0, 90.0],
+                'sky-atmosphere-sun-intensity': 15
+            }
+        });
+
+    });
+	
+	
+	
 // ↓↓ ajoute les bouton zoom + et - et la boussole ↓↓ //
 const nav = new mapboxgl.NavigationControl({
-showCompass: true
+showCompass: true,
+	zoomLevel: "input"
 });
 map.addControl(nav, 'top-right');
 // ↓↓ ajoute les fonctionnalités de recherche d'itineraire et point A-B ↓↓ //
@@ -219,6 +380,7 @@ map.addControl(
         new MapboxDirections({
             accessToken: mapboxgl.accessToken,
 			congestion: true,
+			geometries: 'geojson',
 			//placeholderOrigin: 
         }),
         'top-left'
@@ -231,79 +393,255 @@ map.addControl(new mapboxgl.FullscreenControl());
 map.addControl(new MapboxTraffic()); 
 
 //var pointB = [2.28875,48.87948];
-var pointA = [2.27045,48.86864];
-var pointC = [2.28875,48.87948];
-var pointB = [2.28875,48.87948];
+var pointA = [];
+//var pointC = [2.28875,48.87948];
+var pointB = [];
 	var p1 = 0;
 	var p2 = 0;
-document.getElementById('bout').addEventListener('click', () => {
-	//pointB = [document.getElementById('bout').innerHTML];
-	var pointB = document.getElementById('bout').value;
-	//var eee = new mapboxgl.LngLat(pointB);
+	var p3 = 2.34754;
+	var p4 = 48.85481;
+	
+document.getElementById('boutA').addEventListener('click', () => {
+	var pointA = document.getElementById('boutA').value;
+	console.log("valPointA : " + pointA);
+});	
+	document.getElementById('boutB').addEventListener('click', () => {
+	var pointB = document.getElementById('boutB').value;
+
 	console.log("valPointB : " + pointB);
-	//console.log("valPointB 2 : " + valPointB[1]);
 });	
 
-map.on('mousedown', (e) => {
-document.getElementById('bout').innerHTML =
-	// `e.point` is the x, y coordinates of the `mousemove` event
-	// relative to the top-left corner of the map.
-   // JSON.stringify(e.point) +
-   // '<br />' +
-	// `e.lngLat` is the longitude, latitude geographical position of the event.
-	JSON.stringify(e.lngLat.wrap());
-	 p1 = JSON.stringify(e.lngLat.lng);
-	 p2 = JSON.stringify(e.lngLat.lat);
-
-	//console.log("ppp : " + p1 + " -- " + p2);
+map.on('click', (e) => {
+	if (p1 == 0){
+		document.getElementById('boutA').innerHTML = JSON.stringify(e.lngLat.wrap());
+		pointA = [e.lngLat.lng,e.lngLat.lat]
+		p1 = JSON.stringify(e.lngLat.lng);
+		p2 = JSON.stringify(e.lngLat.lat);
+		console.log("p1 - p2 : " + p1 + "--" + p2);/**/
+		console.log("pointA : " + pointA);
+		
+	} else if (p1 != 0 && !clicDroit){
+		
+		console.log("right clic2");
+		document.getElementById('boutB').innerHTML = JSON.stringify(e.lngLat.wrap());
+		pointB = [e.lngLat.lng,e.lngLat.lat]
+		 p3 = JSON.stringify(e.lngLat.lng);
+		 p4 = JSON.stringify(e.lngLat.lat);/**/
+	}
+	clicDroit = false;
+});
+	var data2;
+	var firstPoint;
+	var firstPointX;
+	var firstPointY;
+	var lastPoint;
+	var lastPointX;
+	var lastPointY;
+document.getElementById('distancePath').addEventListener('click', () => {
+	firstPoint = document.getElementById('boutC').value[0];
+	firstPointX = document.getElementById('boutC').value[0][0];
+	firstPointY = document.getElementById('boutC').value[0][1];
+	//lastPointX = document.getElementById('boutC').value[document.getElementById('boutC').value.length - 1][0];
+	//lastPointY = document.getElementById('boutC').value[document.getElementById('boutC').value.length - 1][1];
+	//lastPoint = document.getElementById('boutC').value[document.getElementById('boutC').value.length - 1];
+			//document.getElementById('boutC').innerHTML = data2;
+		console.log("1er point : " + firstPoint);
+	console.log("1er point X : " + firstPointX);
+	console.log("1er point Y : " + firstPointY);
+		console.log("nbre de points : " + document.getElementById('boutC').value.length);
+		console.log("dernier point : " + document.getElementById('boutC').value[document.getElementById('boutC').value.length - 1]);
+		document.getElementById('boutC').innerHTML = String(document.getElementById('boutC').value);
 });
 	
 	
+var clicDroit = false;
+map.on("contextmenu", (e) => {
+	console.log("clicDroit : " + clicDroit)
+	clicDroit = true;
+	//console.log("right clic");
+	
+});
+//////////////////////////////////// Bouton "bounds" ///////////////////////////////
+document.getElementById('boundsAction').addEventListener('click', () => {
+	const coordinates = document.getElementById('boutC').value; /*recuperation des coordonnées du trajet maillot*/
+	const bounds = new mapboxgl.LngLatBounds(
+		coordinates[0],
+		coordinates[0]
+	);
+	for (const coord of coordinates) {
+		bounds.extend(coord);
+	}
+
+	map.fitBounds(bounds, {
+		padding: 10
+	});
+	console.log("nbre de points2 : " + document.getElementById('boutC').value.length);
+	console.log("point A et B");
+	//console.log("fgfgfg : " + data1);
+});/**/
+document.getElementById('boundsMaillot').addEventListener('click', () => {
+	const coordinates = data1; /*recuperation des coordonnées du trajet maillot*/
+	const bounds = new mapboxgl.LngLatBounds(
+		coordinates[0],
+		coordinates[0]
+	);
+	for (const coord of coordinates) {
+		bounds.extend(coord);
+	}
+
+	map.fitBounds(bounds, {
+		padding: 10
+	});
+	//console.log("blblbl : " + data1);
+	console.log("maillot");
+});
 // ↓↓ START section fly over avec 2 points fixes ↓↓ //
 document.getElementById('fly1').addEventListener('click', () => {
-	
 // Fly to a random location by offsetting the point longitude, latitude
 // by up to 5 degrees.
-map.flyTo({
-center: pointA,
-speed: 0.5, // make the flying slow
-curve: 0.5, // change the speed at which it zooms out
-// This can be any easing function: it takes a number between
-// 0 and 1 and returns another number between 0 and 1.
-//easing: (t) => t,
-essential: true // this animation is considered essential with respect to prefers-reduced-motion
-});
+	map.flyTo({
+		center: [document.getElementById('boutC').value[0][0],document.getElementById('boutC').value[0][1]],
+		speed: 0.5, // make the flying slow
+		curve: 1, // change the speed at which it zooms out
+		// This can be any easing function: it takes a number between
+		// 0 and 1 and returns another number between 0 and 1.
+		//easing: (t) => t,
+		essential: true // this animation is considered essential with respect to prefers-reduced-motion
+	});
 });
 
 document.getElementById('fly2').addEventListener('click', () => {
-	//console.log("pointB2 : " + pointB);
-	//myFunc();
 // Fly to a random location by offsetting the point longitude, latitude
 // by up to 5 degrees.
-map.flyTo({
-center: [p1, p2],
-speed: 0.5,
-curve: 1,
-	//easing: (t) => t,
-essential: true // this animation is considered essential with respect to prefers-reduced-motion
-});
+	map.flyTo({
+		center: [document.getElementById('boutC').value[document.getElementById('boutC').value.length - 1][0], document.getElementById('boutC').value[document.getElementById('boutC').value.length - 1][1]],
+		speed: 0.5,
+		curve: 1,
+			//easing: (t) => t,
+		essential: true // this animation is considered essential with respect to prefers-reduced-motion
+	});
 });
 // ↑↑ END section fly over avec 2 points fixes ↑↑ //
 
+var lineVisible = false;
+	var data1 = [0,0];
+	
+document.getElementById('PathMaillot').addEventListener('click', async () => {
 
+	if (!lineVisible){
+	    const layers = map.getStyle().layers;
+        // Find the index of the first symbol layer in the map style.
+        let firstSymbolId;
+        for (const layer of layers) {
+            if (layer.type === 'symbol') {
+                firstSymbolId = layer.id;
+                break;
+            }
+        }
+        // We fetch the JSON here so that we can parse and use it separately
+        // from GL JS's use in the added source.
+        const response = await fetch(
+            'geojson/map-maillot1.geojson'
+        );
+        const data = await response.json();
+        // save full coordinate list for later
+        const coordinates = data.features[0].geometry.coordinates;
+		data1 = coordinates;
+		//console.log("log : " + coordinates.length)
+        // start by showing just the first coordinate
+        data.features[0].geometry.coordinates = [coordinates[0]];
+		pointA = coordinates[0];
+		console.log("sss : "+ coordinates[0])
+	//pointB = data1[data1.length-1];
+		map.addSource('trace2', { type: 'geojson', data: data });
+	        map.addLayer({
+            'id': 'trace2',
+            'type': 'line',
+            'source': 'trace2',
+			'layout': {
+				'line-join': 'round',
+				'line-cap': 'round'
+			},
+	        'paint': {
+                'line-color': '#2d5f99',
+                'line-opacity': 1,
+				//'line-offset' : 10,
+				//"line-dasharray": [1, 1],
+				//'line-stroke' : 4,
+                'line-width': 12
+            }
+		},firstSymbolId);
+        // add it to the map
+     //map.addSource('trace1', { type: 'geojson', data: data });
+        map.addLayer({
+            'id': 'trace1',
+            'type': 'line',
+            'source': 'trace2',
+			'layout': {
+				'line-join': 'round',
+				'line-cap': 'round'
+			},
+            'paint': {
+                'line-color': '#4882c5',
+                'line-opacity': 1,
+                'line-width': 8,
+				'line-blur': 0,
+            }
+			
+		},firstSymbolId);  /* */
+	        
+
+        // setup the viewport
+        map.jumpTo({ 'center': coordinates[0]/*, 'zoom': 16 */});
+        //map.setPitch(70);
+
+        // on a regular basis, add more coordinates from the saved list and update the map
+        let i = 0;
+        const timer = setInterval(() => {
+			
+            if (i < coordinates.length) {
+                data.features[0].geometry.coordinates.push(coordinates[i]);
+                //map.getSource('trace1').setData(data);
+				map.getSource('trace2').setData(data);
+                //map.setPitch(70-i/100);
+                //map.panTo(coordinates[i], {duration: 3000});
+				map.easeTo({center: coordinates[i], duration: 2000, padding:10, pitch: (map.getPitch()-i/10)});
+				//map.essential(true);
+                i++;
+            } else {
+                window.clearInterval(timer);
+            }
+        }, 10);
+		//console.log("pitch : " + map.getPitch());
+		//console.log("true")
+		
+		timerInProgress = timer;
+		lineVisible = true;
+		
+
+
+		}else{
+			window.clearInterval(timerInProgress);
+			document.getElementById('boutC').innerHTML = "zz";
+			map.removeLayer('trace1');
+			map.removeLayer('trace2');
+			//map.removeSource('trace1');
+			map.removeSource('trace2');
+			lineVisible = false;
+		}
+    });
+	
+	var timerInProgress;
 	
 	
 	
+//// a voir si je peux utiliser plus tard
+function easing(t) {
+	return t * (1 - t);
+}
 	
-	
-//window.onkeydown = (ev: KeyboardEvent) => {
-	
-	   function easing(t) {
-        return t * (2 - t);
-    }
-	
-	var deltaDegrees = 5;
-	var deltaDegreesB = 5;
+var deltaPitch = 5;
+var deltaBearing = 5;
 document.body.onkeydown = function(ev){	
 	switch (ev.which) {
 	
@@ -319,6 +657,7 @@ document.body.onkeydown = function(ev){
 
 //touche "Fleche Haut" pour lancer suivi et rotation		
 	case 38:
+			console.log("Inputs : " + Inputs);
 		//map.zoomLevel += 0.03;
 	break;
 
@@ -342,18 +681,18 @@ document.body.onkeydown = function(ev){
 	//touche ----------[ T ]----------  pour le tilt		
 	case 84:
 		
-		console.log("pitch + : " + map.getPitch() + deltaDegrees);
+		console.log("pitch + : " + map.getPitch() + deltaPitch);
 			map.easeTo({
-			pitch: map.getPitch() + deltaDegrees,
+			pitch: map.getPitch() + deltaPitch,
 			easing: easing
 			});
 	break;
 
 //touche ----------[ G ]----------  pour le tilt		
 	case 71:
-		console.log("pitch - : " + (map.getPitch() - deltaDegrees));
+		console.log("pitch - : " + (map.getPitch() - deltaPitch));
 			map.easeTo({
-			pitch: map.getPitch() - deltaDegrees,
+			pitch: map.getPitch() - deltaPitch,
 			easing: easing
 			});
 	break;
@@ -361,18 +700,18 @@ document.body.onkeydown = function(ev){
 //touche ----------[ R ]----------  pour la rotation		
 	case 82:
 		
-		console.log("bearing + : " + map.getBearing() + deltaDegreesB);
+		console.log("bearing + : " + map.getBearing() + deltaBearing);
 			map.easeTo({
-			bearing: map.getBearing() + deltaDegreesB,
+			bearing: map.getBearing() + deltaBearing,
 			easing: easing
 			});
 	break;
 
 //touche ----------[ F ]----------  pour la rotation		
 	case 70:
-		console.log("bearing - : " + (map.getBearing() - deltaDegreesB));
+		console.log("bearing - : " + (map.getBearing() - deltaBearing));
 			map.easeTo({
-			bearing: map.getBearing() - deltaDegreesB,
+			bearing: map.getBearing() - deltaBearing,
 			easing: easing
 			});
 	break;
