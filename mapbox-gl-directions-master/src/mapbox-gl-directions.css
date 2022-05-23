@@ -282,9 +282,11 @@ body {
   }
 
 .mapbox-directions-inputs button {
-  padding:0;
-  margin:0;
-  background-color: rgba(0,0,0,0);; /* fond d' icone de fleche entre les 2 zones de saisie */
+  padding:1px;
+  margin: 0;
+		width: 24px;
+	height: 24px;
+  background-color: rgba(0,255,0,0);; /* fond d' icone de fleche entre les 2 zones de saisie */
   border:none;
   cursor:pointer;
 

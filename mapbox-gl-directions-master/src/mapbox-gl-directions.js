@@ -189,7 +189,9 @@
         if (!geojson || geojson.type !== 'LineString') {
           throw new Error('Input must be a GeoJSON LineString');
         }
+		 
         return polyline.encode(flipped(geojson.coordinates), precision);
+		  
       };
 
       /**
@@ -6862,6 +6864,7 @@
         }
       }
       module.exports.coordEach = coordEach;
+		
 
       /**
        * Lazily reduce coordinates in any GeoJSON object into a single value,
@@ -6879,6 +6882,7 @@
         coordEach(layer, function (coord) {
           memo = callback(memo, coord);
         }, excludeWrapCoord);
+		 
         return memo;
       }
       module.exports.coordReduce = coordReduce;
@@ -7107,6 +7111,7 @@
           request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
               var data = JSON.parse(request.responseText);
+				
               if (data.error) {
                 dispatch(setDirections([]));
                 return dispatch(setError(data.error));
@@ -7119,6 +7124,8 @@
               // Revise origin / destination points
               dispatch(originPoint(data.waypoints[0].location));
               dispatch(destinationPoint(data.waypoints[data.waypoints.length - 1].location));
+
+				
             } else {
               dispatch(setDirections([]));
               return dispatch(setError(JSON.parse(request.responseText).message));
@@ -7291,6 +7298,7 @@
             profile: profile
           }));
           if (origin.geometry && destination.geometry) dispatch(fetchDirections());
+			
         };
       }
 
@@ -7940,6 +7948,7 @@
               placeholder: placeholderOrigin,
               zoom: zoom
             }));
+			  
 
             var originEl = this.originInput.onAdd(this._map);
             var originContainerEl = this.container.querySelector('#mapbox-directions-origin-input');
@@ -7983,6 +7992,7 @@
                 setProfile(el.value);
               });
             });
+			  
 
             // Reversing Origin / Destination
             this.container.querySelector('.js-reverse-inputs').addEventListener('click', function () {
@@ -8476,6 +8486,7 @@
         }, {
           key: 'subscribedActions',
           value: function subscribedActions() {
+			  console.log("la")
             var _this3 = this;
 
             this.storeUnsubscribe = store.subscribe(function () {
@@ -8494,6 +8505,8 @@
               };
 
               if (directions.length) {
+				  var ss = 0
+				  var bidule = [];
                 directions.forEach(function (feature, index) {
 
                   var features = [];
@@ -8508,6 +8521,7 @@
 
                     if (previous && (!congestion || previous.properties.congestion === congestion)) {
                       previous.geometry.coordinates.push(c);
+						
                     } else {
                       var segment = {
                         geometry: {
@@ -8524,16 +8538,25 @@
                       if (previous) segment.geometry.coordinates.push(previous.geometry.coordinates[previous.geometry.coordinates.length - 1]);
 
                       segment.geometry.coordinates.push(c);
-
+//console.log("cc " + (ss++) + " : " + c)
+						bidule.push(c);
+						
+//console.log("segment : " + segment.geometry.coordinates.length)
                       if (congestion) {
                         segment.properties.congestion = feature.legs[0].annotation.congestion[i - 1];
                       }
 
                       features.push(segment);
+						
+						
                     }
+
                   });
 
+					document.getElementById("boutC").value= bidule;
                   geojson.features = geojson.features.concat(features);
+					
+					
 
                   if (index === routeIndex) {
                     // Collect any possible waypoints from steps
@@ -8549,12 +8572,15 @@
                       }
                     });
                   }
+
                 });
               }
 
               if (_this3._map.style && _this3._map.getSource('directions')) {
                 _this3._map.getSource('directions').setData(geojson);
               }
+//console.log("datalength : " + geojson.features.length);
+//console.log("datalength2 : " + geojson.features);  
             });
           }
         }, {
@@ -8589,8 +8615,8 @@
 
             if (!origin.geometry) {
               this.actions.setOriginFromCoordinates(coords);
-				console.log("aaaaaa : " + coords);
-				document.getElementById("bout").value = [coords];
+				//console.log("aaaaaa : " + coords);
+				document.getElementById("boutA").value = [coords];
             } else {
 
               var features = this._map.queryRenderedFeatures(e.point, {
@@ -8617,15 +8643,16 @@
                 });
                 	
 				  
-				  let pointB = coords;
+				  //let pointB = coords;
 				  
-				  console.log("bbbbbb : " + coords);
-				 // console.log("aaaapointB : " + pointB);
+				 // console.log("bbbbbb : " + coords);
+				  //console.log("aaaapointB : " + coords);
 				  
 				  
 				  //var value2 = document.createElement('pre');
 				   //document.getElementById("bout").value = [coords[0], coords[1]];
-				  document.getElementById("bout").value = [coords];
+				  //document.getElementById("bout").value = [coords];
+				  document.getElementById("boutB").value = [coords];
 				  
 				  
 				  //value2.textContent = String("bouton 1");
@@ -8690,6 +8717,7 @@
             switch (this.isDragging.layer.id) {
               case 'directions-origin-point':
                 this.actions.createOrigin(coords);
+					
                 break;
               case 'directions-destination-point':
                 this.actions.createDestination(coords);
@@ -8712,6 +8740,8 @@
             switch (this.isDragging.layer.id) {
               case 'directions-origin-point':
                 this.actions.setOriginFromCoordinates(origin.geometry.coordinates);
+					document.getElementById("boutA").value = origin.geometry.coordinates;
+					console.log("je bouge : "+ origin.geometry.coordinates)
                 break;
               case 'directions-destination-point':
                 this.actions.setDestinationFromCoordinates(destination.geometry.coordinates);
@@ -8773,6 +8803,7 @@
         }, {
           key: 'getOrigin',
           value: function getOrigin() {
+			  
             return store.getState().origin;
           }
 
@@ -8852,6 +8883,7 @@
               id: 'waypoint'
             });
             this.actions.addWaypoint(index, waypoint);
+			  
             return this;
           }
 
@@ -8871,6 +8903,7 @@
               id: 'waypoint'
             });
             this.actions.setWaypoint(index, waypoint);
+		
             return this;
           }
 
@@ -8898,6 +8931,7 @@
         }, {
           key: 'getWaypoints',
           value: function getWaypoints() {
+			  	 
             return store.getState().waypoints;
           }
 
