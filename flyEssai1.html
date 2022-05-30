@@ -6,10 +6,26 @@
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+	    <script src='https://unpkg.com/three@0.106.2/build/three.min.js'></script>
+
+
+    <script src="https://unpkg.com/three@0.106.2/examples/js/controls/OrbitControls"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/loaders/GLTFLoader"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/shaders/LuminosityHighPassShader"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/shaders/CopyShader"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/shaders/AfterimageShader"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/postprocessing/EffectComposer"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/postprocessing/ShaderPass"></script>
+
+    <script src="https://unpkg.com/three@0.106.2/examples/js/postprocessing/RenderPass"></script>
+    <script src="https://unpkg.com/three@0.106.2/examples/js/postprocessing/UnrealBloomPass"></script>
+	
+
+	
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-	.Hline {
+.Hline {
 	width: 4%;
 	height: 0px;
 	top:50%;
@@ -43,6 +59,16 @@ border: 4px #fff solid;
   align-items: center;
   text-align: center;
 }
+.cacheWhite {
+	width: 100%;
+	height: 100%;
+	top:442px;
+	left: 0px;
+	background: rgba(0,0,0,1.00);
+
+	position: absolute;
+	pointer-events: none;
+	}
 </style>
 </head>
 <body>
@@ -50,7 +76,7 @@ border: 4px #fff solid;
 	<div class="center"></div>
 <div class="Hline"></div>
 <div class="Vline"></div>
-	
+<div class="cacheWhite"></div>	
 <script src="geojson/routes.js"></script>
 <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 <script>
@@ -58,13 +84,119 @@ border: 4px #fff solid;
     const map = new mapboxgl.Map({
         container: 'map',
         zoom: 11.53,
-        center: [6.5615, 46.0598],
-        pitch: 65,
+        center: [2.272043600678484, 48.8700817475247],
+        pitch: 15,
         bearing: -180,
         style: 'mapbox://styles/kikistef/cl32rlf6c002314qqinxrgo3x',
-        interactive: false
+        interactive: true
     });
 map.transform._fov = 0.4;
+
+// this is the path the camera will look at
+const targetRoute = routes.target;
+// this is the path the camera will move along
+const cameraRoute = routes.camera;	
+	
+	//for (truc in cameraRoute){
+	//console.log("gggg : " + truc)
+					
+				
+        var modelOrigin = targetRoute[0];
+        var modelAltitude = 50;
+        var modelRotate = [Math.PI / 2, 0, 0];
+        var modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(modelOrigin, modelAltitude);
+        // transformation parameters to position, rotate and scale the 3D model onto the map
+        var modelTransform = {
+            translateX: modelAsMercatorCoordinate.x,
+            translateY: modelAsMercatorCoordinate.y,
+            translateZ: modelAsMercatorCoordinate.z,
+            rotateX: modelRotate[0],
+            rotateY: modelRotate[1],
+            rotateZ: modelRotate[2],
+            /* Since our 3D model is in real world meters, a scale transform needs to be
+            * applied since the CustomLayerInterface expects units in MercatorCoordinates.
+            */
+            scale: modelAsMercatorCoordinate.meterInMercatorCoordinateUnits()
+        };
+
+        var composer, cube;
+        var params = {
+            enable: true
+        };
+
+        var THREE = window.THREE;
+        var customLayer = {
+            id: '3d-model',
+            type: 'custom',
+            renderingMode: '3d',
+            onAdd: function (map, gl) {
+                this.camera = new THREE.Camera();
+                this.scene = new THREE.Scene();
+                this.map = map;
+                //let ambientLight = new THREE.AmbientLight(0xffffff);
+                //this.scene.add(ambientLight);
+				//let geometry = new THREE.SphereGeometry( 2, 32, 16 );
+                let geometry = new THREE.CylinderGeometry( 5, 5, 1, 32 );//new THREE.BoxBufferGeometry(10, 10, 10, 2, 2, 2);
+                let material = new THREE.MeshNormalMaterial( {transparent: true, opacity:0.8});
+                cube = new THREE.Mesh(geometry, material);
+                this.scene.add(cube);
+                this.map = map;
+				var sphereAxis = new THREE.AxesHelper(20);
+				cube.add(sphereAxis);
+                // use the Mapbox GL JS map canvas for three.js
+                this.renderer = new THREE.WebGLRenderer({
+                    canvas: map.getCanvas(),
+                    context: gl,
+                    antialias: true,
+                    preserveDrawingBuffer: true,
+                    alpha:false,
+                });
+
+                // change value from false to true
+                this.renderer.autoClear = false;
+
+                // add EffectComposer
+               /* composer = new THREE.EffectComposer(this.renderer);
+                composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+
+                //bloompass
+                var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+                bloomPass.threshold = 0;
+                bloomPass.strength = 0.6;
+                bloomPass.radius = 0;
+                composer.addPass(bloomPass);*/
+            },
+            render: function (gl, matrix) {
+                let rotationX = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(1, 0, 0), modelTransform.rotateX);
+                let rotationY = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 1, 0), modelTransform.rotateY);
+                let rotationZ = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0, 0, 1), modelTransform.rotateZ);
+
+                let m = new THREE.Matrix4().fromArray(matrix);
+                let l = new THREE.Matrix4().makeTranslation(modelTransform.translateX, modelTransform.translateY, modelTransform.translateZ)
+                    .scale(new THREE.Vector3(modelTransform.scale, -modelTransform.scale, modelTransform.scale))
+                    .multiply(rotationX)
+                    .multiply(rotationY)
+                    .multiply(rotationZ);
+
+                this.camera.projectionMatrix = m.multiply(l);
+                this.renderer.state.reset();
+
+                //cube.rotation.x += 0.005;
+                //cube.rotation.y += 0.01;
+                // use composer
+                //composer.render();
+                this.renderer.render(this.scene, this.camera);
+               // this.map.triggerRepaint();
+            }
+        };
+        
+	        map.on('style.load', function () {
+//console.log("nbre de chargement : " + truc)
+            map.addLayer(customLayer);
+        });	
+	//}
+	
+	
     // `routes` comes from https://docs.mapbox.com/mapbox-gl-js/assets/routes.js,
     // which has properties that are in the shape of an array of arrays that correspond
     //  to the `coordinates` property of a GeoJSON linestring, for example:
@@ -73,14 +205,14 @@ map.transform._fov = 0.4;
     //   [6.56913, 46.05679],
     //   ...
     // ]
-    // this is the path the camera will look at
-    const targetRoute = routes.target;
-    // this is the path the camera will move along
-    const cameraRoute = routes.camera;
-	console.log("qq : " + routes.camera[0][2]);
 
+	//console.log("qq : " + routes.camera[0][2]);
+console.log("target : " + routes.target.length)
+console.log("camera : " + routes.camera.length)
+	let hoveredStateId = null;
     // add terrain, sky, and line layers once the style has loaded
     map.on('load', () => {
+		//map.addLayer(customLayer);
         map.addSource('mapbox-dem', {
             'type': 'raster-dem',
             'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
@@ -114,54 +246,230 @@ map.transform._fov = 0.4;
             id: 'line',
             paint: {
                 'line-color': 'rgba(72, 130,197, 1)',
-                'line-width': 10
+                'line-width': 8
             },
             layout: {
                 'line-cap': 'round',
                 'line-join': 'round'
             }
         });
+		
+		map.addSource('traceCam', {
+            type: 'geojson',
+            data: {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': cameraRoute
+                }
+            }
+        });
+		
+        map.addLayer({
+            type: 'line',
+            source: 'traceCam',
+            id: 'line2',
+            paint: {
+                'line-color': 'rgba(255, 0,0, 1)',
+                'line-width': 2
+            },
+            layout: {
+                'line-cap': 'round',
+                'line-join': 'round'
+            }
+        });
+		
+		map.addSource('pointCam', {
+            type: 'geojson',
+            data: {
+                'type': 'Feature',
+				'id': 2,
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': cameraRoute
+                },
+				'properties': {
+					
+					'id': 2,
+				}
+            }
+        });
+
+        map.addLayer({
+			id: 'point',
+            type: 'circle',
+            source: 'pointCam',
+			'layout': {},
+            'paint': {
+				// Make circles larger as the user zooms from z12 to z22.
+				'circle-radius': 8,
+				//'circle-color': "rgba(255, 0,0, 0.4)",
+				'circle-stroke-width': 1,
+     			'circle-stroke-color': '#000',
+				'circle-color': [
+					  'case',
+					  ['boolean', ['feature-state', 'hover'], false],
+					   'rgba(0, 255,255, 1)',
+					   'rgba(255, 0,0, 0.4)'
+				]
+				/*'fill-extrusion-color': '#ff0000',
+				'fill-extrusion-base': 9.9,
+				'fill-extrusion-height': ['get', 'height'],*/
+				
+			}
+
+        });/**/
+		console.log("map.pointCam : " + map.point)
+
+		
+		map.flyTo({
+		center: [2.272043600678484,48.8700817475247],
+		zoom:17.17,
+		speed: 2, // make the flying slow
+		curve: 1, // change the speed at which it zooms out
+			pitch: 82.8,
+			bearing: 38.4,
+		// This can be any easing function: it takes a number between
+		// 0 and 1 and returns another number between 0 and 1.
+		//easing: (t) => t,
+		essential: true // this animation is considered essential with respect to prefers-reduced-motion
+		});
+		
+		map.on('mousemove', 'point', (e) => {
+			map.getCanvas().style.cursor = 'pointer';
+			if (e.features.length > 0) {
+				if (hoveredStateId !== null) {
+					map.setFeatureState({ source: 'pointCam', id: hoveredStateId },{ hover: false });
+				}
+				hoveredStateId = e.features[0].id;
+				console.log("hoveredStateId : " + e.features[0].id);
+				map.setFeatureState({ source: 'pointCam', id: hoveredStateId },{ hover: true });
+			}
+		});
+		map.on('mouseleave', 'point', () => {
+			map.getCanvas().style.cursor = '';
+			if (hoveredStateId !== null) {
+				map.setFeatureState({ source: 'pointCam', id: hoveredStateId },{ hover: false });
+			}
+			hoveredStateId = null;
+		});
     });
+	
+	
 
-    // wait for the terrain and sky to load before starting animation
-    map.on('click', () => {
-        const animationDuration = 200000;
-        const cameraAltitude = 90;
-        // get the overall distance of each route so we can interpolate along them
-        const routeDistance = turf.lineDistance(turf.lineString(targetRoute));
-        const cameraRouteDistance = turf.lineDistance(turf.lineString(cameraRoute));
+	
 
-        let start;
-var truc = 0;
-        function frame(time) {
+var isPaused = true;
+	var phase = 0;
+	//var camAlt = 80;
+	var cameraAltitude = 80;
+	var deltaBearing = 5;
+	document.body.onkeydown = function(ev){
+		switch (ev.which) {
+//touche "<- " pour passer au point de vue precedent
+	case 37:
+			console.log(" fleche <- ");
+			map.easeTo({
+			bearing: map.getBearing() - deltaBearing,
+			//easing: easing
+			});
+	break;
+
+//touche " -> " pour passer au point de vue suivant				
+	case 39:
+		console.log(" fleche -> ");
+			map.easeTo({
+			bearing: map.getBearing() + deltaBearing,
+			//easing: easing
+			});
+	break;
+
+//touche ----------[ - ]----------  pour ralentir l'ego car	
+	case 109:
+		
+		if (cameraAltitude >= 45){
+			console.log(" signe - : " + cameraAltitude);
+			cameraAltitude -= 0.2;		
+		}
+	break;
+			
+//touche ----------[ + ]----------  pour ralentir l'ego car	
+	case 107:
+		console.log(" signe + : " + cameraAltitude);
+		cameraAltitude += 0.2;	
+	break;
+		
+		
+//touche ----------[ i ]----------  pour ralentir l'ego car	
+	case 73:
+		isPaused = !isPaused; // flips the pause state
+		
+		//console.log(" lettre i ");
+	break;
+		}
+		
+
+	};
+function easing(t) {
+	return t * (10 - t);
+}
+
+const animationDuration = 50000;
+// get the overall distance of each route so we can interpolate along them
+const routeDistance = turf.lineDistance(turf.lineString(targetRoute));
+const cameraRouteDistance = turf.lineDistance(turf.lineString(cameraRoute));
+// wait for the terrain and sky to load before starting animation
+let start;	  
+	var temps =0;
+//	var time = 0;
+map.on('click', (e) => {
+//function launchPath() {
+	isPaused = !isPaused
+	if (!isPaused){
+		phase = 0;
+		//console.log(e); 
+		let start;
+		window.requestAnimationFrame(frame);
+		console.log("temps : " + temps)
+		
+	}else{
+		window.cancelAnimationFrame(frame);
+	}
+	
+
+});
+	
+function frame(time) {
+	console.log("phase : " + phase.toFixed(5) + " -- start : "+ start + " -- time : " + time );
+		
+			temps = time;
             if (!start) start = time;
+	if (!isPaused){
             // phase determines how far through the animation we are
-            const phase = (time - start) / animationDuration;
-
+			phase = (time - start) / animationDuration;
+//console.log(phase);
             // phase is normalized between 0 and 1
             // when the animation is finished, reset start to loop the animation
             if (phase > 1) {
+				time = 0;
                 // wait 1.5 seconds before looping
                 setTimeout(() => {
                     start = 0.0;
+					time = 0.0;
                 }, 2000);
             }
 
             // use the phase to get a point that is the appropriate distance along the route
             // this approach syncs the camera and route positions ensuring they move
             // at roughly equal rates even if they don't contain the same number of points
-            const alongRoute = turf.along(
-                turf.lineString(targetRoute),
-                routeDistance * phase
-            ).geometry.coordinates;
+            const alongRoute = turf.along(turf.lineString(targetRoute), routeDistance * phase).geometry.coordinates;
 
-            const alongCamera = turf.along(
-                turf.lineString(cameraRoute),
-                cameraRouteDistance * phase
-            ).geometry.coordinates;
+            const alongCamera = turf.along(turf.lineString(cameraRoute),
+               cameraRouteDistance * phase).geometry.coordinates;
 
             const camera = map.getFreeCameraOptions();
-console.log("pp : " + routes.camera[0][2]);
+//console.log("pp : " + routes.camera[0][2]);
             // set the position and altitude of the camera
             camera.position = mapboxgl.MercatorCoordinate.fromLngLat(
                 {
@@ -176,14 +484,10 @@ console.log("pp : " + routes.camera[0][2]);
                 lng: alongRoute[0],
                 lat: alongRoute[1]
             });
-
             map.setFreeCameraOptions(camera);
-
             window.requestAnimationFrame(frame);
+			}
         }
-
-        window.requestAnimationFrame(frame);
-    });
 </script>
 
 </body>
