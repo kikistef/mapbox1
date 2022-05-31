@@ -46,20 +46,21 @@ mix-blend-mode: difference;
 }
 .center {
 	position: absolute;
-background: rgba(255,255,255,0.8);
+background: rgba(2550, 255,255, 1);
   width: 30px;
   height: 30px;
-border: 4px #fff solid;
-	mix-blend-mode: difference;
+border: 4px rgba(72, 130,197, 0.8) solid;
+	/*mix-blend-mode: multiply;*/
 	top: calc(50% - 18px);;
 	left: calc(50% - 18px);
   border-radius: 50%;
+	filter: drop-shadow(0 0 0.15rem black);
 
   display: flex;
   align-items: center;
   text-align: center;
 }
-.cacheWhite {
+.cacheBlack {
 	width: 100%;
 	height: 100%;
 	top:442px;
@@ -73,10 +74,10 @@ border: 4px #fff solid;
 </head>
 <body>
 <div id="map"></div>
-	<div class="center"></div>
+<!--	<div class="center"></div> -->
 <div class="Hline"></div>
 <div class="Vline"></div>
-<div class="cacheWhite"></div>	
+<div class="cacheBlack"></div>	
 <script src="geojson/routes.js"></script>
 <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 <script>
@@ -102,7 +103,7 @@ const cameraRoute = routes.camera;
 					
 				
         var modelOrigin = targetRoute[0];
-        var modelAltitude = 50;
+        var modelAltitude = 0.2;
         var modelRotate = [Math.PI / 2, 0, 0];
         var modelAsMercatorCoordinate = mapboxgl.MercatorCoordinate.fromLngLat(modelOrigin, modelAltitude);
         // transformation parameters to position, rotate and scale the 3D model onto the map
@@ -136,8 +137,9 @@ const cameraRoute = routes.camera;
                 //let ambientLight = new THREE.AmbientLight(0xffffff);
                 //this.scene.add(ambientLight);
 				//let geometry = new THREE.SphereGeometry( 2, 32, 16 );
-                let geometry = new THREE.CylinderGeometry( 5, 5, 1, 32 );//new THREE.BoxBufferGeometry(10, 10, 10, 2, 2, 2);
-                let material = new THREE.MeshNormalMaterial( {transparent: true, opacity:0.8});
+                let geometry = new THREE.CylinderGeometry( 5, 5, 0.1, 32 );//new THREE.BoxBufferGeometry(10, 10, 10, 2, 2, 2);
+                var material = new THREE.MeshBasicMaterial( {color: 0xff0000, opacity:0.8});
+				//material.color('#ff0000');
                 cube = new THREE.Mesh(geometry, material);
                 this.scene.add(cube);
                 this.map = map;
@@ -149,7 +151,7 @@ const cameraRoute = routes.camera;
                     context: gl,
                     antialias: true,
                     preserveDrawingBuffer: true,
-                    alpha:false,
+                    alpha:true,
                 });
 
                 // change value from false to true
@@ -191,7 +193,7 @@ const cameraRoute = routes.camera;
         };
         
 	        map.on('style.load', function () {
-//console.log("nbre de chargement : " + truc)
+			//console.log("nbre de chargement : " + truc)
             map.addLayer(customLayer);
         });	
 	//}
@@ -219,7 +221,7 @@ console.log("camera : " + routes.camera.length)
             'tileSize': 512,
             'maxzoom': 14
         });
-        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1 });
+        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 0 });
         map.addLayer({
             'id': 'sky',
             'type': 'sky',
@@ -325,18 +327,15 @@ console.log("camera : " + routes.camera.length)
 		
 		map.flyTo({
 		center: [2.272043600678484,48.8700817475247],
-		zoom:17.17,
+		zoom:18.35,
 		speed: 2, // make the flying slow
 		curve: 1, // change the speed at which it zooms out
-			pitch: 82.8,
-			bearing: 38.4,
-		// This can be any easing function: it takes a number between
-		// 0 and 1 and returns another number between 0 and 1.
-		//easing: (t) => t,
-		essential: true // this animation is considered essential with respect to prefers-reduced-motion
+			pitch: 85,
+			bearing: 36,
+			essential: true // this animation is considered essential with respect to prefers-reduced-motion
 		});
 		
-		map.on('mousemove', 'point', (e) => {
+	/*	map.on('mousemove', 'point', (e) => {
 			map.getCanvas().style.cursor = 'pointer';
 			if (e.features.length > 0) {
 				if (hoveredStateId !== null) {
@@ -353,7 +352,7 @@ console.log("camera : " + routes.camera.length)
 				map.setFeatureState({ source: 'pointCam', id: hoveredStateId },{ hover: false });
 			}
 			hoveredStateId = null;
-		});
+		});*/
     });
 	
 	
@@ -363,26 +362,28 @@ console.log("camera : " + routes.camera.length)
 var isPaused = true;
 	var phase = 0;
 	//var camAlt = 80;
-	var cameraAltitude = 80;
+	var cameraAltitude = 25;
 	var deltaBearing = 5;
 	document.body.onkeydown = function(ev){
 		switch (ev.which) {
 //touche "<- " pour passer au point de vue precedent
 	case 37:
 			console.log(" fleche <- ");
-			map.easeTo({
+				map.setBearing = map.getBearing() - deltaBearing;
+			/*map.jumpTo({
 			bearing: map.getBearing() - deltaBearing,
-			//easing: easing
-			});
+			easing: easing
+			});*/
 	break;
 
 //touche " -> " pour passer au point de vue suivant				
 	case 39:
 		console.log(" fleche -> ");
-			map.easeTo({
+			map.setBearing = map.getBearing() + deltaBearing;
+			/*map.jumpTo({
 			bearing: map.getBearing() + deltaBearing,
-			//easing: easing
-			});
+			easing: easing
+			});*/
 	break;
 
 //touche ----------[ - ]----------  pour ralentir l'ego car	
@@ -390,14 +391,14 @@ var isPaused = true;
 		
 		if (cameraAltitude >= 45){
 			console.log(" signe - : " + cameraAltitude);
-			cameraAltitude -= 0.2;		
+			cameraAltitude -= 0.8;		
 		}
 	break;
 			
 //touche ----------[ + ]----------  pour ralentir l'ego car	
 	case 107:
 		console.log(" signe + : " + cameraAltitude);
-		cameraAltitude += 0.2;	
+		cameraAltitude += 0.8;	
 	break;
 		
 		
@@ -425,7 +426,37 @@ let start;
 //	var time = 0;
 map.on('click', (e) => {
 //function launchPath() {
-	isPaused = !isPaused
+	/*map.flyTo({
+		center: [2.272043600678484,48.8700817475247],
+		zoom:17.17,
+		speed: 2, // make the flying slow
+		curve: 1, // change the speed at which it zooms out
+			pitch: 82.8,
+			bearing: 38.4,
+		// This can be any easing function: it takes a number between
+		// 0 and 1 and returns another number between 0 and 1.
+		//easing: (t) => t,
+		essential: true // this animation is considered essential with respect to prefers-reduced-motion
+		});*/
+		isPaused = !isPaused
+	if (!isPaused){
+		//phase = 0;
+		//console.log(e); 
+		let start;
+		window.requestAnimationFrame(frame);
+		//console.log("temps : " + cameraAltitude)
+		
+	}else{
+		window.cancelAnimationFrame(frame);
+	}
+	console.log("phase : " + phase)
+	console.log( "pitch : " + map.getPitch() + " -- bearing : " + map.getBearing() + " -- Zoom : " + map.getZoom())
+	
+
+});
+	/*map.once('moveend',()=>{
+		console.log("FFF");
+			isPaused = !isPaused
 	if (!isPaused){
 		phase = 0;
 		//console.log(e); 
@@ -436,12 +467,10 @@ map.on('click', (e) => {
 	}else{
 		window.cancelAnimationFrame(frame);
 	}
-	
-
-});
+	})*/
 	
 function frame(time) {
-	console.log("phase : " + phase.toFixed(5) + " -- start : "+ start + " -- time : " + time );
+	//console.log("phase : " + phase.toFixed(5) + " -- start : "+ start + " -- time : " + time );
 		
 			temps = time;
             if (!start) start = time;
@@ -456,7 +485,7 @@ function frame(time) {
                 // wait 1.5 seconds before looping
                 setTimeout(() => {
                     start = 0.0;
-					time = 0.0;
+					//time = 0.0;
                 }, 2000);
             }
 
@@ -464,6 +493,7 @@ function frame(time) {
             // this approach syncs the camera and route positions ensuring they move
             // at roughly equal rates even if they don't contain the same number of points
             const alongRoute = turf.along(turf.lineString(targetRoute), routeDistance * phase).geometry.coordinates;
+		//customLayer.coordinates = [2.2755827754735947,48.873941607404774];
 
             const alongCamera = turf.along(turf.lineString(cameraRoute),
                cameraRouteDistance * phase).geometry.coordinates;
@@ -478,6 +508,8 @@ function frame(time) {
                 },
                 cameraAltitude
             );
+
+		//console.log(customLayer.position )
 
             // tell the camera to look at a point along the route
             camera.lookAtPoint({
